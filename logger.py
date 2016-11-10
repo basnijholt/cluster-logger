@@ -6,7 +6,7 @@ from datetime import datetime
 import json
 import os
 import hpc05
-import argparse
+
 now = datetime.utcnow()
 
 fname = 'job_log_{}.json'.format(now.strftime("%Y-%m"))
