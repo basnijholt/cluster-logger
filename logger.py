@@ -1,37 +1,23 @@
 #!/usr/bin/env python
 
 """Add this as a crobjob at hpc1:
-*/15 * * * * /home/bnijholt/anaconda3/bin/python /home/bnijholt/Dropbox/Work/cluster_log/logger.py >> /home/bnijholt/Dropbox/Work/cluster_log/logger.log 2>&1
-or add this as a crobjob at hpc05:
-*/15 * * * * /home/basnijholt/anaconda3/bin/python /home/basnijholt/Dropbox/Work/cluster_log/logger.py --local=True >> /home/basnijholt/Dropbox/Work/cluster_log/logger.log 2>&1
-"""
+*/15 * * * * /home/bnijholt/anaconda3/bin/python /home/bnijholt/Dropbox/Work/cluster_log/logger.py >> /home/bnijholt/Dropbox/Work/cluster_log/logger.log 2>&1"""
 from datetime import datetime
 import json
 import os
+import hpc05
 import argparse
-
-parser = argparse.ArgumentParser()
-parser.add_argument('--local', nargs='?', const=False, type=bool)
-args = parser.parse_args()
-
 now = datetime.utcnow()
 
 fname = 'job_log_{}.json'.format(now.strftime("%Y-%m"))
 folder = os.path.expanduser('~/Dropbox/Work/cluster_log/')
 job_log_file = os.path.join(folder, fname)
 
-if args.local:
-    # If run locally at hpc05
-    import subprocess
-    out = subprocess.check_output("qstat -ea".split()).decode('utf-8').split('\n')
-else:
-    # If run via ssh
-    import hpc05
-    ssh = hpc05.ssh_utils.setup_ssh()
-    stdin, stdout, sterr = ssh.exec_command('qstat -ea')
-    out = stdout.readlines(), sterr.readlines()
+ssh = hpc05.ssh_utils.setup_ssh()
+stdin, stdout, sterr = ssh.exec_command('qstat -ea')
+out = stdout.readlines(), sterr.readlines()
 
-cols = ['Job ID', 'Username', 'Queue', 'Jobname', 'SessID', 'NDS', 'TSK', 
+cols = ['Job ID', 'Username', 'Queue', 'Jobname', 'SessID', 'NDS', 'TSK',
         'Required Memory', 'Required Time', 'S', 'Elapsed Time']
 lines = out[0][5:]
 processes = []
