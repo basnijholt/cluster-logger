@@ -7,9 +7,7 @@ import hpc05
 
 now = datetime.utcnow()
 
-fname = 'job_log_{}.json'.format(now.strftime("%Y-%m"))
-folder = os.path.expanduser('~/Work/cluster_log/')
-job_log_file = os.path.join(folder, fname)
+job_log_file = 'job_log_{}.json'.format(now.strftime("%Y-%m"))
 
 ssh = hpc05.ssh_utils.setup_ssh()
 stdin, stdout, sterr = ssh.exec_command('qstat -ea')
