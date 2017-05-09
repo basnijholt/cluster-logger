@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """Add this as a crobjob at hpc1:
-*/15 * * * * /home/bnijholt/anaconda3/bin/python /home/bnijholt/Dropbox/Work/cluster_log/logger.py >> /home/bnijholt/Dropbox/Work/cluster_log/logger.log 2>&1"""
+*/15 * * * * /home/bnijholt/anaconda3/bin/python /home/bnijholt/Work/cluster_log/logger.py >> /home/bnijholt/Work/cluster_log/logger.log 2>&1"""
 from datetime import datetime
 import json
 import os
@@ -10,7 +10,7 @@ import hpc05
 now = datetime.utcnow()
 
 fname = 'job_log_{}.json'.format(now.strftime("%Y-%m"))
-folder = os.path.expanduser('~/Dropbox/Work/cluster_log/')
+folder = os.path.expanduser('~/Work/cluster_log/')
 job_log_file = os.path.join(folder, fname)
 
 ssh = hpc05.ssh_utils.setup_ssh()
