@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-"""Add this as a crobjob at hpc1:
-*/15 * * * * /home/bnijholt/anaconda3/bin/python /home/bnijholt/Work/cluster_log/logger.py >> /home/bnijholt/Work/cluster_log/logger.log 2>&1"""
 from datetime import datetime
 import json
 import os
