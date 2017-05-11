@@ -42,10 +42,10 @@ def set_elapsed_time(process):
 
 
 def filter_dict(process):
-    to_save = ['Elapsed Time', 'Job ID', 'Jobname', 'SessID', 'Username',
-               'current_time', 'num_cores', 'running_time']
-    process = {k: process[k] for k in to_save}
-    return process
+    to_save = ['Job ID', 'Jobname', 'SessID', 'Username',
+               'current_time', 'num_cores', 'cpu_time']
+    filtered_process = {k: process[k] for k in to_save}
+    return filtered_process
 
 
 def process_line(line):
@@ -53,17 +53,17 @@ def process_line(line):
     if process['S'] == 'R':
         process['current_time'] = datetime.timestamp(now)
         process['num_cores'] = get_num_processors(process)
-        process['running_time'] = set_elapsed_time(process)
+        process['cpu_time'] = set_elapsed_time(process)
         return filter_dict(process)
 
-    
+
 def save_processes(processes, fname, append=True):
     mode = 'ab' if append else 'wb'
     with open(fname, mode) as pfile:
         for p in processes:
             pickle.dump(p, pfile)
 
-            
+
 def load_processes(fname):
     processes = []
     with open(fname, 'rb') as f:
