@@ -2,11 +2,13 @@
 
 import argparse
 from collections import defaultdict
-from datetime import datetime, timezone, timedelta
+from datetime import datetime
 import hpc05
 import pickle
+from pytz import timezone
 
-tz = timezone(timedelta(hours=2))  # timezone in the Netherlands
+tz = timezone('Europe/Amsterdam')  # timezone in the Netherlands
+tz_offset = tz.utcoffset(datetime.now()).seconds // 3600
 now = datetime.now(tz)
 
 def get_qstat():
