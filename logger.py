@@ -2,7 +2,7 @@
 
 import argparse
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 import hpc05
 import pickle
 from pytz import timezone
@@ -116,7 +116,7 @@ if __name__ == "__main__":
     if args.clean_db:
         try:
             clean_database(database_fname)
-        except FileNotFoundError:
+        except OSError:
             pass
     else:
         lines = get_qstat()

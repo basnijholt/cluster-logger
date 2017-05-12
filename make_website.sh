@@ -1,4 +1,5 @@
 #!/bin/bash
-jupyter nbconvert --to html --execute index.ipynb
-rsync -ravz --delete index.html hpc05@tnw-tn1.tudelft.net:
+jupyter nbconvert --to html --execute index.ipynb >> error.log 2>&1
+rsync -ravz index.html hpc05@tnw-tn1.tudelft.net:
+rsync -ravz database.p hpc05@tnw-tn1.tudelft.net:
 rm -f index.html
