@@ -19,6 +19,14 @@ def get_qstat():
     return lines
 
 
+def get_total_cores():
+    ssh = hpc05.ssh_utils.setup_ssh()
+    stdin, stdout, sterr = ssh.exec_command('LOCALnodeload.pl')
+    out, error = stdout.readlines(), sterr.readlines()
+    lines = out[2:]
+    return sum(int(line.split()[1]) for line in lines)
+
+
 def parse_line(line):
     cols = ['Job ID', 'Username', 'Queue', 'Jobname', 'SessID', 'NDS', 'TSK',
             'Required Memory', 'Required Time', 'S', 'Elapsed Time']
@@ -74,6 +82,10 @@ def load_processes(fname):
                 process = pickle.load(f)
             except EOFError:
                 break
+            except pickle.UnpicklingError:
+                # If an UnpicklingError happens overwrite the database.
+                save_processes(processes, fname, append=False)
+                break
             processes.append(process)
     return processes
 
@@ -118,6 +130,7 @@ if __name__ == "__main__":
             clean_database(database_fname)
         except OSError:
             pass
+
     else:
         lines = get_qstat()
 
