@@ -22,9 +22,39 @@ def get_qstat():
 def get_total_cores():
     ssh = hpc05.ssh_utils.setup_ssh()
     stdin, stdout, sterr = ssh.exec_command('LOCALnodeload.pl')
-    out, error = stdout.readlines(), sterr.readlines()
+    out, err = stdout.readlines(), sterr.readlines()
     lines = out[2:]
     return sum(int(line.split()[1]) for line in lines)
+
+
+def print_current_usage():
+    lines = get_qstat()
+    processes = [process_line(line) for line in lines]
+    processes = [p for p in processes if p is not None]  # Filter out `None`s
+
+    stat = defaultdict(int)
+    for p in processes:
+        stat[p['Username']] += p['num_cores']
+
+    class bcolors:
+        HEADER = '\033[95m'
+        OKBLUE = '\033[94m'
+        OKGREEN = '\033[92m'
+        WARNING = '\033[93m'
+        FAIL = '\033[91m'
+        ENDC = '\033[0m'
+        BOLD = '\033[1m'
+        UNDERLINE = '\033[4m'
+
+    total_in_use = sum(v for v in stat.values())
+
+    total_cores = get_total_cores()
+
+    free_cores = total_cores - total_in_use
+    print(bcolors.WARNING + 'Total in cores in use: {}, free: {}\n'.format(
+        total_in_use, free_cores) + bcolors.ENDC)
+    for user, num_cores in sorted(stat.items(), key=lambda x: -x[1]):
+        print(bcolors.OKGREEN + '{} uses {} cores'.format(user, num_cores) + bcolors.ENDC)
 
 
 def parse_line(line):
