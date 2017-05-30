@@ -3,6 +3,7 @@
 import argparse
 from collections import defaultdict
 from datetime import datetime, timedelta
+import gzip
 import hpc05
 import pickle
 from pytz import timezone
@@ -99,14 +100,14 @@ def process_line(line):
 
 def save_processes(processes, fname, append=True):
     mode = 'ab' if append else 'wb'
-    with open(fname, mode) as pfile:
+    with gzip.open(fname, mode) as pfile:
         for p in processes:
             pickle.dump(p, pfile)
 
 
 def load_processes(fname):
     processes = []
-    with open(fname, 'rb') as f:
+    with gzip.open(fname, 'rb') as f:
         while True:
             try:
                 process = pickle.load(f)
