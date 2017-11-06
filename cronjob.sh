@@ -1,5 +1,4 @@
 #!/bin/bash
-cd ~/Work/cluster_log/
-. ~/.bash_profile
+cd  /home/cluster_logger/cluster-logger-master
 ./run_logger.sh
 ./make_website.sh
