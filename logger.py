@@ -4,13 +4,17 @@ import argparse
 from collections import defaultdict
 from datetime import datetime, timedelta
 import gzip
-import hpc05
+import os
 import pickle
+
+import hpc05
 from pytz import timezone
+
 
 tz = timezone('Europe/Amsterdam')  # timezone in the Netherlands
 tz_offset = tz.utcoffset(datetime.now()).seconds // 3600
 now = datetime.now(tz)
+
 
 def get_qstat():
     ssh = hpc05.ssh_utils.setup_ssh()
@@ -143,7 +147,10 @@ def clean_database(database_fname, days=60):
             keep.append(process)
 
     for fname, processes in to_archive.items():
-        save_processes(processes, 'archive/' + fname + '.p')
+        os.makedirs('archive', exist_ok=True)
+        fname = 'archive/' + fname + '.p'
+        append = os.path.isfile(fname)
+        save_processes(processes, fname, append)
 
     save_processes(keep, database_fname, append=False)
 
@@ -157,10 +164,7 @@ if __name__ == "__main__":
     database_fname = args.fname
 
     if args.clean_db:
-        try:
-            clean_database(database_fname)
-        except OSError:
-            pass
+        clean_database(database_fname)
 
     else:
         lines = get_qstat()
