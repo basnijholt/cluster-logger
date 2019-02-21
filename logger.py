@@ -80,6 +80,9 @@ def get_num_processors(process):
 def set_elapsed_time(process):
     try:
         h, m, s = process['Elapsed Time'].split(':')
+        if s == '':
+            # Sometimes the Elapsed Time is reported as '13079:00:'
+            s = 0
         total_seconds = 3600 * int(h) + 60 * int(m) + int(s)
     except:
         total_seconds = 0
